@@ -18,8 +18,13 @@ namespace TestApplicationForVebtech.Services.Service
             else
             {
                 throw new InvalidOperationException(); //исправить!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }
-            
+            }            
+        }
+
+        public async Task<Role> GetRoleForUserAsync(Guid userId)
+        {
+            var userRole = await UnitOfWork.Roles.ReadAsync(userId);
+            return userRole;
         }
     }
 }

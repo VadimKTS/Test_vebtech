@@ -1,19 +1,42 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using TestApplicationForVebtech.DataAccess.Entity;
+using TestApplicationForVebtech.Models.UserModels;
+using TestApplicationForVebtech.Services.Interfaces;
 
 namespace TestApplicationForVebtech.Controllers
 {
     public class UserController : Controller
     {
-        private readonly ILogger<UserController> _logger;
-        public UserController(ILogger<UserController> logger)
+        private IUserService _userService;
+        private IRoleService _roleService;
+        public UserController(IUserService userService, IRoleService roleService)
         {
-            _logger = logger;
+            _userService = userService;
+            _roleService = roleService;
         }
 
-        //public IActionResult Index()
-        //{
-        //    return View();
-        //}
+        [HttpGet]
+        public async Task<IActionResult> GetAllUsersInList()
+        {
+            List<User> allUsers = (List<User>)await _userService.GetAllUsersAsync();
+            var usersViewModel = new List<UsersListViewModel>();
+            foreach (var item in allUsers)
+            {
+                Role userRoles = await _roleService.GetRoleForUserAsync(item.Id);
+                var newModel = new UsersListViewModel
+                {
+                    Id = item.Id,
+                    Name = item.Name,
+                    Email = item.Email,
+                    Age = item.Age,
+                    Roles = userRoles.Roles,
+                };
+                usersViewModel.Add(newModel);
+            }
+
+            return View(usersViewModel);
+        }
+
 
         //[HttpGet(Name = "GetWeatherForecast")]
         //public IEnumerable<WeatherForecast> Get()

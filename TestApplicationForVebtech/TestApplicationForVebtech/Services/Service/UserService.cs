@@ -13,12 +13,34 @@ namespace TestApplicationForVebtech.Services.Service
 
         public async Task<IList<User>> GetAllUsersAsync()
         {
-            IList<User> users = await UnitOfWork.Users.ReadAsync();
+            IList<User> users = await UnitOfWork.Users.GetAllAsync();
+            return users;
         }
-        //Task<User> GetUserByIdAsync(Guid id);
-        //Task UpdateRoleForUserAsync(User user);
-        //Task<User> CreateUserAsync(User user);
-        //Task<User> UpdateUserAsync(Guid id);
-        //Task DeleteUserAsync(Guid id);
+
+        public async Task<User> GetUserByIdAsync(Guid id)
+        {
+            User user = await UnitOfWork.Users.ReadAsync(id);
+            return user;
+        }
+
+        //public async Task UpdateRoleForUserAsync(User user)
+        //{
+        //    //!!!!!!!!!!!!!!!!!!!!!!!!
+        //}
+
+        public async Task<User> CreateUserAsync(User user)
+        {
+            return await UnitOfWork.Users.CreateAsync(user);
+        }
+
+        public async Task UpdateUserAsync(User user)
+        {
+            await UnitOfWork.Users.UpdateAsync(user);
+        }
+
+        public async Task DeleteUserAsync(User user)
+        {
+            await UnitOfWork.Users.UpdateAsync(user);
+        }
     }
 }
