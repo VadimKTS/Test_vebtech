@@ -23,11 +23,6 @@ namespace TestApplicationForVebtech.Services.Service
             return user;
         }
 
-        //public async Task UpdateRoleForUserAsync(User user)
-        //{
-        //    //!!!!!!!!!!!!!!!!!!!!!!!!
-        //}
-
         public async Task<User> CreateUserAsync(User user)
         {
             return await UnitOfWork.Users.CreateAsync(user);

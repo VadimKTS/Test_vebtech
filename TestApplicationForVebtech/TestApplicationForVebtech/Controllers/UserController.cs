@@ -1,40 +1,51 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Linq;
 using TestApplicationForVebtech.DataAccess.Entity;
 using TestApplicationForVebtech.Models.UserModels;
 using TestApplicationForVebtech.Services.Interfaces;
 
 namespace TestApplicationForVebtech.Controllers
 {
-    public class UserController : Controller
+    [ApiController]
+    [Route("[controller]")]
+    public class UserController : ControllerBase
     {
         private IUserService _userService;
         private IRoleService _roleService;
-        public UserController(IUserService userService, IRoleService roleService)
+        private IRoleUserService _roleUserService;
+        public UserController(IUserService userService, IRoleService roleService, IRoleUserService roleUserService)
         {
             _userService = userService;
             _roleService = roleService;
+            _roleUserService = roleUserService;
         }
 
-        [HttpGet]
-        public async Task<IActionResult> GetAllUsersInList()
+        /// <summary>
+        /// GetAllUsersInList
+        /// </summary>
+        /// <returns></returns>
+        [HttpGet(Name = "GetAllUsersInList")]
+        public async Task<IList<UsersListViewModel>> GetAllUsersInList()
         {
             List<User> allUsers = (List<User>)await _userService.GetAllUsersAsync();
+            List<Role> allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+            List<RoleUser> roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
             var usersViewModel = new List<UsersListViewModel>();
-            foreach (var item in allUsers)
+
+            foreach (var user in allUsers)
             {
-                Role userRoles = await _roleService.GetRoleForUserAsync(item.Id);
-                var newModel = new UsersListViewModel
+                var userModel = new UsersListViewModel()
                 {
-                    Id = item.Id,
-                    Name = item.Name,
-                    Email = item.Email,
-                    Age = item.Age,
-                    //Roles = userRoles.Roles, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
+                    Id = user.Id,
+                    Name = user.Name,
+                    Age = user.Age,
+                    Email = user.Email,
+                    Roles = user.Roles,
                 };
-                usersViewModel.Add(newModel);
+                usersViewModel.Add(userModel);
             }
 
-            return View(usersViewModel);
+            return usersViewModel;
         }
 
 

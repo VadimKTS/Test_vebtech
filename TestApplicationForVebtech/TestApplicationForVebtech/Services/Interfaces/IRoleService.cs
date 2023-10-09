@@ -4,7 +4,10 @@ namespace TestApplicationForVebtech.Services.Interfaces
 {
     public interface IRoleService
     {
-        Task AddNewRoleForUserAsync(User user, Role role);
-        Task<Role> GetRoleForUserAsync(int userId);
+        Task<IList<Role>> GetAllRolesAsync();
+        Task<Role> GetRoleByIdAsync(int id);
+        Task<Role> CreateRoleAsync(Role role);
+        Task UpdateRoleAsync(Role role);
+        Task DeleteRoleAsync(Role role);
     }
 }

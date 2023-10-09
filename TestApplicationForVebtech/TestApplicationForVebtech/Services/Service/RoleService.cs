@@ -1,4 +1,5 @@
-﻿using TestApplicationForVebtech.DataAccess.DbPatterns.Interfaces;
+﻿using System.Data;
+using TestApplicationForVebtech.DataAccess.DbPatterns.Interfaces;
 using TestApplicationForVebtech.DataAccess.Entity;
 using TestApplicationForVebtech.Services.Interfaces;
 
@@ -8,23 +9,31 @@ namespace TestApplicationForVebtech.Services.Service
     {
         public RoleService(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
-        public async Task AddNewRoleForUserAsync(User user, Role role)
+        public async Task<IList<Role>> GetAllRolesAsync()
         {
-            if (role != null)
-            {
-                role.Users.Add(user);
-                await UnitOfWork.Roles.UpdateAsync(role);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }
-            else
-            {
-                throw new InvalidOperationException(); //исправить!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
-            }            
+            IList<Role> users = await UnitOfWork.Roles.GetAllAsync();
+            return users;
         }
 
-        public async Task<Role> GetRoleForUserAsync(int userId)
+        public async Task<Role> GetRoleByIdAsync(int id)
         {
-            var userRole = await UnitOfWork.Roles.ReadAsync(userId);
-            return userRole;
+            Role user = await UnitOfWork.Roles.ReadAsync(id);
+            return user;
+        }
+
+        public async Task<Role> CreateRoleAsync(Role role)
+        {
+            return await UnitOfWork.Roles.CreateAsync(role);
+        }
+
+        public async Task UpdateRoleAsync(Role role)
+        {
+            await UnitOfWork.Roles.UpdateAsync(role);
+        }
+
+        public async Task DeleteRoleAsync(Role role)
+        {
+            await UnitOfWork.Roles.UpdateAsync(role);
         }
     }
 }

@@ -6,7 +6,6 @@ namespace TestApplicationForVebtech.Services.Interfaces
     {
         Task<IList<User>> GetAllUsersAsync();
         Task<User> GetUserByIdAsync(int id);
-        //Task UpdateRoleForUserAsync(User user);
         Task<User> CreateUserAsync(User user);
         Task UpdateUserAsync(User user);
         Task DeleteUserAsync(User user);
