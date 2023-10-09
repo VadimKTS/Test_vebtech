@@ -12,12 +12,17 @@ namespace TestApplicationForVebtech.DataAccess
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
+            modelBuilder.Entity<Role>()
+                .HasMany(e => e.Users)
+                .WithMany(e => e.Roles)
+                .UsingEntity<RoleUser>();
+
             string[] RoleNames = new[] { "User", "Admin", "Support", "SuperAdmin" };
-            var roles = new List<Role>();
 
             for (int i = 1; i < RoleNames.Length+1; i++)
             {
-                modelBuilder.Entity<Role>().HasData(
+                
+             modelBuilder.Entity<Role>().HasData(
                 new Role
                 {
                     Id = i,
@@ -36,25 +41,31 @@ namespace TestApplicationForVebtech.DataAccess
                     Password = "qwerty", //!!!!!!!!!!!!!!добавить Hash
                 }
                 );
-
-            modelBuilder.Entity<UserRole>().HasData(
-                new UserRole
-                {
-                    Id = 1,
-                    RolesId = 1,
-                    UsersId = 1,
+            modelBuilder.Entity<RoleUser>().HasData(
+                new RoleUser
+                { 
+                    RoleId = 1,
+                    UserId = 1,
                 },
-                new UserRole
+                new RoleUser
                 {
-                    Id = 2,
-                    RolesId = 4,
-                    UsersId = 1,
+                    RoleId = 2,
+                    UserId = 1,
+                },
+                new RoleUser
+                {
+                    RoleId = 3,
+                    UserId = 1,
+                },
+                new RoleUser
+                {
+                    RoleId = 4,
+                    UserId = 1,
                 }
                 );
-            
         }
         public DbSet<User> Users { get; set; }
         public DbSet<Role> Roles { get; set; }
-        public DbSet<UserRole> UserRoles { get; set; }
+        public DbSet<RoleUser> RoleUsers { get; set; }
     }
 }

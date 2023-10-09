@@ -14,6 +14,6 @@ namespace TestApplicationForVebtech.DataAccess.DbPatterns
 
         public IGenericRepository<User> Users => new GenericRepository<User>(_DbContext);
         public IGenericRepository<Role> Roles => new GenericRepository<Role>(_DbContext);
-        public IGenericRepository<UserRole> UserRoles => new GenericRepository<UserRole>(_DbContext);
+        public IGenericRepository<RoleUser> RoleUsers => new GenericRepository<RoleUser>(_DbContext);
     }
 }

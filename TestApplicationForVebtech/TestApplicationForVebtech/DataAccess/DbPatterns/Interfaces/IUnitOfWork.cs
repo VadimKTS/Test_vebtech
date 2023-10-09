@@ -6,5 +6,6 @@ namespace TestApplicationForVebtech.DataAccess.DbPatterns.Interfaces
     {
         IGenericRepository<User> Users { get; }
         IGenericRepository<Role> Roles { get; }
+        IGenericRepository<RoleUser> RoleUsers { get; }
     }
 }

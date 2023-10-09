@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestApplicationForVebtech.DataAccess;
 
@@ -10,9 +11,11 @@ using TestApplicationForVebtech.DataAccess;
 namespace TestApplicationForVebtech.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231009194310_Initial_1.0.1")]
+    partial class Initial_101
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -20,6 +23,21 @@ namespace TestApplicationForVebtech.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 128);
 
             SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+
+            modelBuilder.Entity("RoleUser", b =>
+                {
+                    b.Property<int>("RolesId")
+                        .HasColumnType("int");
+
+                    b.Property<int>("UsersId")
+                        .HasColumnType("int");
+
+                    b.HasKey("RolesId", "UsersId");
+
+                    b.HasIndex("UsersId");
+
+                    b.ToTable("RoleUser");
+                });
 
             modelBuilder.Entity("TestApplicationForVebtech.DataAccess.Entity.Role", b =>
                 {
@@ -57,43 +75,6 @@ namespace TestApplicationForVebtech.Migrations
                         {
                             Id = 4,
                             Name = "SuperAdmin"
-                        });
-                });
-
-            modelBuilder.Entity("TestApplicationForVebtech.DataAccess.Entity.RoleUser", b =>
-                {
-                    b.Property<int>("RoleId")
-                        .HasColumnType("int");
-
-                    b.Property<int>("UserId")
-                        .HasColumnType("int");
-
-                    b.HasKey("RoleId", "UserId");
-
-                    b.HasIndex("UserId");
-
-                    b.ToTable("RoleUsers");
-
-                    b.HasData(
-                        new
-                        {
-                            RoleId = 1,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            RoleId = 2,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            RoleId = 4,
-                            UserId = 1
                         });
                 });
 
@@ -135,33 +116,19 @@ namespace TestApplicationForVebtech.Migrations
                         });
                 });
 
-            modelBuilder.Entity("TestApplicationForVebtech.DataAccess.Entity.RoleUser", b =>
+            modelBuilder.Entity("RoleUser", b =>
                 {
-                    b.HasOne("TestApplicationForVebtech.DataAccess.Entity.Role", "Role")
-                        .WithMany("RoleUsers")
-                        .HasForeignKey("RoleId")
+                    b.HasOne("TestApplicationForVebtech.DataAccess.Entity.Role", null)
+                        .WithMany()
+                        .HasForeignKey("RolesId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
 
-                    b.HasOne("TestApplicationForVebtech.DataAccess.Entity.User", "User")
-                        .WithMany("RoleUsers")
-                        .HasForeignKey("UserId")
+                    b.HasOne("TestApplicationForVebtech.DataAccess.Entity.User", null)
+                        .WithMany()
+                        .HasForeignKey("UsersId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
-
-                    b.Navigation("Role");
-
-                    b.Navigation("User");
-                });
-
-            modelBuilder.Entity("TestApplicationForVebtech.DataAccess.Entity.Role", b =>
-                {
-                    b.Navigation("RoleUsers");
-                });
-
-            modelBuilder.Entity("TestApplicationForVebtech.DataAccess.Entity.User", b =>
-                {
-                    b.Navigation("RoleUsers");
                 });
 #pragma warning restore 612, 618
         }

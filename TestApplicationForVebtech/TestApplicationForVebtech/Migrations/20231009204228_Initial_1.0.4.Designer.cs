@@ -2,6 +2,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using TestApplicationForVebtech.DataAccess;
 
@@ -10,9 +11,11 @@ using TestApplicationForVebtech.DataAccess;
 namespace TestApplicationForVebtech.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    partial class MyDbContextModelSnapshot : ModelSnapshot
+    [Migration("20231009204228_Initial_1.0.4")]
+    partial class Initial_104
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder
@@ -83,16 +86,6 @@ namespace TestApplicationForVebtech.Migrations
                         new
                         {
                             RoleId = 2,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            RoleId = 3,
-                            UserId = 1
-                        },
-                        new
-                        {
-                            RoleId = 4,
                             UserId = 1
                         });
                 });

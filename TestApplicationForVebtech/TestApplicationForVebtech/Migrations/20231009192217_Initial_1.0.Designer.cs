@@ -11,8 +11,8 @@ using TestApplicationForVebtech.DataAccess;
 namespace TestApplicationForVebtech.Migrations
 {
     [DbContext(typeof(MyDbContext))]
-    [Migration("20231009170541_Initial_1.0.2")]
-    partial class Initial_102
+    [Migration("20231009192217_Initial_1.0")]
+    partial class Initial_10
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)

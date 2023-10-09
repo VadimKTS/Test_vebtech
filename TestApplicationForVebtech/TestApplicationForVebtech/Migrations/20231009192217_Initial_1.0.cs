@@ -1,5 +1,4 @@
-﻿using System;
-using Microsoft.EntityFrameworkCore.Migrations;
+﻿using Microsoft.EntityFrameworkCore.Migrations;
 
 #nullable disable
 
@@ -27,10 +26,25 @@ namespace TestApplicationForVebtech.Migrations
                 });
 
             migrationBuilder.CreateTable(
+                name: "UserRoles",
+                columns: table => new
+                {
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
+                    RolesId = table.Column<int>(type: "int", nullable: false),
+                    UsersId = table.Column<int>(type: "int", nullable: false)
+                },
+                constraints: table =>
+                {
+                    table.PrimaryKey("PK_UserRoles", x => x.Id);
+                });
+
+            migrationBuilder.CreateTable(
                 name: "Users",
                 columns: table => new
                 {
-                    Id = table.Column<Guid>(type: "uniqueidentifier", nullable: false),
+                    Id = table.Column<int>(type: "int", nullable: false)
+                        .Annotation("SqlServer:Identity", "1, 1"),
                     Name = table.Column<string>(type: "nvarchar(max)", nullable: false),
                     Age = table.Column<int>(type: "int", nullable: false),
                     Email = table.Column<string>(type: "nvarchar(max)", nullable: false),
@@ -46,7 +60,7 @@ namespace TestApplicationForVebtech.Migrations
                 columns: table => new
                 {
                     RolesId = table.Column<int>(type: "int", nullable: false),
-                    UsersId = table.Column<Guid>(type: "uniqueidentifier", nullable: false)
+                    UsersId = table.Column<int>(type: "int", nullable: false)
                 },
                 constraints: table =>
                 {
@@ -72,13 +86,23 @@ namespace TestApplicationForVebtech.Migrations
                 {
                     { 1, "User" },
                     { 2, "Admin" },
-                    { 3, "Support" }
+                    { 3, "Support" },
+                    { 4, "SuperAdmin" }
+                });
+
+            migrationBuilder.InsertData(
+                table: "UserRoles",
+                columns: new[] { "Id", "RolesId", "UsersId" },
+                values: new object[,]
+                {
+                    { 1, 1, 1 },
+                    { 2, 4, 1 }
                 });
 
             migrationBuilder.InsertData(
                 table: "Users",
                 columns: new[] { "Id", "Age", "Email", "Name", "Password" },
-                values: new object[] { new Guid("af93f255-c4fa-4692-9907-cbc517c38298"), 30, "testUserEmail@mail.ru", "TestUser", "qwerty" });
+                values: new object[] { 1, 30, "testUserEmail@mail.ru", "TestUser", "qwerty" });
 
             migrationBuilder.CreateIndex(
                 name: "IX_RoleUser_UsersId",
@@ -91,6 +115,9 @@ namespace TestApplicationForVebtech.Migrations
         {
             migrationBuilder.DropTable(
                 name: "RoleUser");
+
+            migrationBuilder.DropTable(
+                name: "UserRoles");
 
             migrationBuilder.DropTable(
                 name: "Roles");
