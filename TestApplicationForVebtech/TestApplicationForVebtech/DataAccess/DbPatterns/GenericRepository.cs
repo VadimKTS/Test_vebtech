@@ -23,7 +23,7 @@ namespace TestApplicationForVebtech.DataAccess.DbPatterns
             return await _dbContext.Set<T>().ToListAsync();
         }
 
-        public async Task<T> ReadAsync(Guid id)
+        public async Task<T> ReadAsync(int id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
         }

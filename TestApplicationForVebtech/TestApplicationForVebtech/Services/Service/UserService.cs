@@ -17,7 +17,7 @@ namespace TestApplicationForVebtech.Services.Service
             return users;
         }
 
-        public async Task<User> GetUserByIdAsync(Guid id)
+        public async Task<User> GetUserByIdAsync(int id)
         {
             User user = await UnitOfWork.Users.ReadAsync(id);
             return user;

@@ -4,7 +4,7 @@
     {
         Task<T> CreateAsync(T t);
         Task<IList<T>> GetAllAsync();
-        Task<T> ReadAsync(Guid id);
+        Task<T> ReadAsync(int id);
         Task UpdateAsync(T t);
         Task DeleteAsync(T t);
 

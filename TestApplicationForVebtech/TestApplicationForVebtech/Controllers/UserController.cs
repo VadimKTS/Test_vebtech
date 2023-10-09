@@ -29,7 +29,7 @@ namespace TestApplicationForVebtech.Controllers
                     Name = item.Name,
                     Email = item.Email,
                     Age = item.Age,
-                    Roles = userRoles.Roles,
+                    //Roles = userRoles.Roles, !!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
                 };
                 usersViewModel.Add(newModel);
             }

@@ -8,12 +8,12 @@ namespace TestApplicationForVebtech.Services.Service
     {
         public RoleService(IUnitOfWork unitOfWork) : base(unitOfWork) { }
 
-        public async Task AddNewRoleForUserAsync(Role role, UserRoles userRole)
+        public async Task AddNewRoleForUserAsync(User user, Role role)
         {
             if (role != null)
             {
-                role.Roles.Add(userRole);
-                await UnitOfWork.Roles.UpdateAsync(role);
+                role.Users.Add(user);
+                await UnitOfWork.Roles.UpdateAsync(role);//!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!!
             }
             else
             {
@@ -21,7 +21,7 @@ namespace TestApplicationForVebtech.Services.Service
             }            
         }
 
-        public async Task<Role> GetRoleForUserAsync(Guid userId)
+        public async Task<Role> GetRoleForUserAsync(int userId)
         {
             var userRole = await UnitOfWork.Roles.ReadAsync(userId);
             return userRole;
