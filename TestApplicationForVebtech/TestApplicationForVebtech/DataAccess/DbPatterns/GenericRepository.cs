@@ -18,6 +18,11 @@ namespace TestApplicationForVebtech.DataAccess.DbPatterns
             return t;
         }
 
+        public async Task<IList<T>> GetAllAsync()
+        {
+            return await _dbContext.Set<T>().ToListAsync();
+        }
+
         public async Task<T> ReadAsync(Guid id)
         {
             return await _dbContext.Set<T>().FindAsync(id);
