@@ -25,16 +25,16 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet(Name = "GetAllUsersInList")]
-        public async Task<IList<UsersListViewModel>> GetAllUsersInList()
+        public async Task<IEnumerable<UserViewModel>> GetAllUsersInList()
         {
-            List<User> allUsers = (List<User>)await _userService.GetAllUsersAsync();
-            List<Role> allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
-            List<RoleUser> roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
-            var usersViewModel = new List<UsersListViewModel>();
+            var allUsers = (List<User>)await _userService.GetAllUsersAsync();
+            var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+            var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+            var usersViewModel = new List<UserViewModel>();
 
             foreach (var user in allUsers)
             {
-                var userModel = new UsersListViewModel()
+                var userModel = new UserViewModel()
                 {
                     Id = user.Id,
                     Name = user.Name,
@@ -48,17 +48,30 @@ namespace TestApplicationForVebtech.Controllers
             return usersViewModel;
         }
 
-
-        //[HttpGet(Name = "GetWeatherForecast")]
-        //public IEnumerable<WeatherForecast> Get()
-        //{
-        //    return Enumerable.Range(1, 5).Select(index => new WeatherForecast
-        //    {
-        //        Date = DateOnly.FromDateTime(DateTime.Now.AddDays(index)),
-        //        TemperatureC = Random.Shared.Next(-20, 55),
-        //        Summary = Summaries[Random.Shared.Next(Summaries.Length)]
-        //    })
-        //    .ToArray();
-        //}
+        /// <summary>
+        /// "GetUserById"
+        /// </summary>
+        /// <param name="id"></param>
+        /// <returns></returns>
+        [HttpPost(Name = "GetUserById")]
+        public async Task<UserViewModel> GetUserById(int id)
+        {
+            var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+            var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+            var user = await _userService.GetUserByIdAsync(id);
+            if (user != null)
+            {
+                var userModel = new UserViewModel()
+                {
+                    Id = user.Id,
+                    Name = user.Name,
+                    Age = user.Age,
+                    Email = user.Email,
+                    Roles = user.Roles,
+                };
+                return userModel;
+            }
+            return new UserViewModel();
+        }
     }
 }
