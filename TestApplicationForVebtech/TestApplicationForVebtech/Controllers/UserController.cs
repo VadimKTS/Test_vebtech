@@ -24,8 +24,8 @@ namespace TestApplicationForVebtech.Controllers
         /// GetAllUsersInList
         /// </summary>
         /// <returns></returns>
-        [HttpGet(Name = "GetAllUsersInList")]
-        public async Task<IEnumerable<UserViewModel>> GetAllUsersInList()
+        [HttpGet("GetAllUsers")]
+        public async Task<IEnumerable<UserViewModel>> GetAllUsersGet()
         {
             var allUsers = (List<User>)await _userService.GetAllUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -53,8 +53,8 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost(Name = "GetUserById")]
-        public async Task<UserViewModel> GetUserById(int id)
+        [HttpGet("GetUserById")]
+        public async Task<IActionResult> GetUserByIdGet(int id)
         {
             var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -69,9 +69,9 @@ namespace TestApplicationForVebtech.Controllers
                     Email = user.Email,
                     Roles = user.Roles,
                 };
-                return userModel;
+                return Ok(userModel);
             }
-            return new UserViewModel();
+            return NotFound($"Пользователь с ID={id} не найден.\nError: response status is 404");
         }
     }
 }
