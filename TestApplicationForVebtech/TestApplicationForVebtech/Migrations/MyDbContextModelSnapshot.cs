@@ -35,7 +35,7 @@ namespace TestApplicationForVebtech.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Roles");
+                    b.ToTable("Roles", (string)null);
 
                     b.HasData(
                         new
@@ -72,7 +72,7 @@ namespace TestApplicationForVebtech.Migrations
 
                     b.HasIndex("UserId");
 
-                    b.ToTable("RoleUsers");
+                    b.ToTable("RoleUsers", (string)null);
 
                     b.HasData(
                         new
@@ -122,7 +122,7 @@ namespace TestApplicationForVebtech.Migrations
 
                     b.HasKey("Id");
 
-                    b.ToTable("Users");
+                    b.ToTable("Users", (string)null);
 
                     b.HasData(
                         new

@@ -73,5 +73,41 @@ namespace TestApplicationForVebtech.Controllers
             }
             return NotFound($"Пользователь с ID={id} не найден.\nError: response status is 404");
         }
+
+        [HttpPost("RegisterUser")]
+        public async Task<IActionResult> RegisterUser(RegisterUserViewModel registerModel)
+        {
+            //var allUsers = (List<User>)await _userService.GetAllUsersAsync();
+            //var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+            //var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+
+            var userRole = await _roleService.GetRoleByIdAsync(1);
+            if (ModelState.IsValid)
+            {
+                var newUser = new User()
+                {
+                    Name = registerModel.Name,
+                    Age = registerModel.Age,
+                    Email = registerModel.Email,
+                    Password = registerModel.Password,
+                };
+                await _userService.CreateUserAsync(newUser);
+                var newRoleUser = new RoleUser()
+                {
+                    RoleId = userRole.Id,
+                    Role = userRole,
+                    UserId = newUser.Id,
+                    User = newUser,
+                };
+                newUser.RoleUsers = new List<RoleUser>() { newRoleUser };
+                userRole.Users.Add(newUser);
+                await _userService.UpdateUserAsync(newUser);
+                return Ok(newUser);
+            }
+            else
+            {
+                return BadRequest("Модель не валидна");
+            }
+        }
     }
 }

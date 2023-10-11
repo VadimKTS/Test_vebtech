@@ -17,6 +17,11 @@ namespace TestApplicationForVebtech.DataAccess
                 .WithMany(e => e.Roles)
                 .UsingEntity<RoleUser>();
 
+            modelBuilder.Entity<User>()
+                .HasMany(e => e.Roles)
+                .WithMany(e => e.Users)
+                .UsingEntity<RoleUser>();
+
             string[] RoleNames = new[] { "User", "Admin", "Support", "SuperAdmin" };
 
             for (int i = 1; i < RoleNames.Length+1; i++)
