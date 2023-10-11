@@ -22,11 +22,11 @@ namespace TestApplicationForVebtech.Controllers
         }
 
         /// <summary>
-        /// GetAllUsersInList
+        /// Получение списка всех пользователе с их ролями
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllUsers")]
-        public async Task<IEnumerable<UserViewModel>> GetAllUsers()
+        public async Task<IActionResult> GetAllUsers(int page = 1, int pageSize = 3)
         {
             var allUsers = (List<User>)await _userService.GetAllUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -45,12 +45,23 @@ namespace TestApplicationForVebtech.Controllers
                 };
                 usersViewModel.Add(userModel);
             }
+            //-------------pagination--------------
+            var totalCount = usersViewModel.Count;
+            var totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
+            var usersPerPage = usersViewModel
+                .Skip((page - 1) * pageSize)
+                .Take(pageSize)
+                .ToList();
+            if (page > totalPages)
+            {
+                return NotFound($"Всего страниц {totalPages}. \nОбъектов на странице {pageSize}.");
+            }
 
-            return usersViewModel;
+            return  Ok(usersPerPage);
         }
 
         /// <summary>
-        /// "GetUserById"
+        /// Получение пользователя по id и всех его ролей 
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
@@ -76,7 +87,7 @@ namespace TestApplicationForVebtech.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Создание нового пользователя
         /// </summary>
         /// <param name="registrationModel"></param>
         /// <returns></returns>
@@ -110,7 +121,7 @@ namespace TestApplicationForVebtech.Controllers
                 newUser.RoleUsers = new List<RoleUser>() { newRoleUser };
                 userRole.Users.Add(newUser);
                 await _userService.UpdateUserAsync(newUser);
-                return Ok(newUser);
+                return Ok($"Пользователь с email:{newUser.Email} успешно зарегистрирован.");
             }
             else
             {
@@ -119,7 +130,7 @@ namespace TestApplicationForVebtech.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Добавление новой роли пользователю
         /// </summary>
         /// <param name="userId"></param>
         /// <param name="roleId"></param>
@@ -153,7 +164,7 @@ namespace TestApplicationForVebtech.Controllers
         }
 
         /// <summary>
-        /// 
+        /// Удаление пользователя по id
         /// </summary>
         /// <param name="userId"></param>
         /// <returns></returns>
@@ -172,6 +183,12 @@ namespace TestApplicationForVebtech.Controllers
             return Ok($"Пользователь с ID={userId} удален.");
         }
 
+        /// <summary>
+        /// Обновление информации о пользователе по id
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="model"></param>
+        /// <returns></returns>
         [HttpPut("EditUserById")]
         public async Task<IActionResult> EditUserByIdPut(int userId, EditUserViewModel model)
         {
