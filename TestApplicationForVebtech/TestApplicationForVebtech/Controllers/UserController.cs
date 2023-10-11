@@ -1,7 +1,10 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using Microsoft.Data.SqlClient;
+using Microsoft.IdentityModel.Tokens;
 using System.Data;
 using System.Linq;
 using TestApplicationForVebtech.DataAccess.Entity;
+using TestApplicationForVebtech.Models.SortModels;
 using TestApplicationForVebtech.Models.UserModels;
 using TestApplicationForVebtech.Services.Interfaces;
 
@@ -26,7 +29,7 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int page = 1, int pageSize = 3)
+        public async Task<IActionResult> GetAllUsers(int? ageFilter, string nameFilter = "any", string emailFilter = "any", UserSortState userSortOrder = UserSortState.NameAsc, RoleSortState roleSortOrder = RoleSortState.NameAsc,  int page = 1, int pageSize = 3 )
         {
             var allUsers = (List<User>)await _userService.GetAllUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -45,7 +48,7 @@ namespace TestApplicationForVebtech.Controllers
                 };
                 usersViewModel.Add(userModel);
             }
-            //-------------pagination--------------
+            //----------------pagination-----------------------
             var totalCount = usersViewModel.Count;
             var totalPages = (int)Math.Ceiling((decimal)totalCount / pageSize);
             var usersPerPage = usersViewModel
@@ -56,8 +59,45 @@ namespace TestApplicationForVebtech.Controllers
             {
                 return NotFound($"Всего страниц {totalPages}. \nОбъектов на странице {pageSize}.");
             }
+            //--------------------sort-------------------------
+            usersPerPage = userSortOrder switch
+            {
+                UserSortState.NameDesc => usersPerPage.OrderByDescending(s => s.Name).ToList(),
+                UserSortState.AgeAsc => usersPerPage.OrderBy(s => s.Age).ToList(),
+                UserSortState.AgeDesc => usersPerPage.OrderByDescending(s => s.Age).ToList(),
+                UserSortState.EmailAsc => usersPerPage.OrderBy(s => s.Email).ToList(),
+                UserSortState.EmailDesc => usersPerPage.OrderByDescending(s => s.Email).ToList(),
+                _ => usersPerPage.OrderBy(s => s.Name).ToList(),
+            };
 
-            return  Ok(usersPerPage);
+            foreach (var user in usersPerPage)
+            {
+                user.Roles = roleSortOrder switch
+                {
+                    RoleSortState.NameDesc => user.Roles.OrderByDescending(s => s.Name).ToList(),
+                    _ => user.Roles.OrderBy(s => s.Name).ToList(),
+                };
+            }
+            //--------------------Filter----------------------------
+            if (!nameFilter.Equals("any"))
+            {
+                usersPerPage = usersPerPage.Where(user => user.Name == nameFilter).ToList();
+            }
+            if (ageFilter != null)
+            {
+                usersPerPage = usersPerPage.Where(user => user.Age == ageFilter).ToList();
+            }
+            if (!emailFilter.Equals("any"))
+            {
+                usersPerPage = usersPerPage.Where(user => user.Email == emailFilter).ToList();
+            }
+
+            if (usersPerPage.IsNullOrEmpty())
+            {
+                return NotFound("Не найдено пользователей соответствующих параметрам фильтрации.");
+            }
+
+            return Ok(usersPerPage);
         }
 
         /// <summary>

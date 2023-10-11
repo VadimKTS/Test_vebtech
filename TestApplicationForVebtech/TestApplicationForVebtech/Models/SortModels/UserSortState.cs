@@ -8,7 +8,5 @@
         AgeDesc,    // по возрасту по убыванию
         EmailAsc, // по email по возрастанию
         EmailDesc, // по email по убыванию
-        RolesAsc, // по ролям по возрастанию
-        RolesDesc // по ролям по убыванию
     }
 }
