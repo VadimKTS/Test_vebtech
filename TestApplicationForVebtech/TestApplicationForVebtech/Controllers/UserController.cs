@@ -1,4 +1,5 @@
 ﻿using Microsoft.AspNetCore.Mvc;
+using System.Data;
 using System.Linq;
 using TestApplicationForVebtech.DataAccess.Entity;
 using TestApplicationForVebtech.Models.UserModels;
@@ -25,7 +26,7 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllUsers")]
-        public async Task<IEnumerable<UserViewModel>> GetAllUsersGet()
+        public async Task<IEnumerable<UserViewModel>> GetAllUsers()
         {
             var allUsers = (List<User>)await _userService.GetAllUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -53,8 +54,8 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpGet("GetUserById")]
-        public async Task<IActionResult> GetUserByIdGet(int id)
+        [HttpPost("GetUserById")]
+        public async Task<IActionResult> GetUserByIdPost(int id)
         {
             var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -74,22 +75,29 @@ namespace TestApplicationForVebtech.Controllers
             return NotFound($"Пользователь с ID={id} не найден.\nError: response status is 404");
         }
 
-        [HttpPost("RegisterUser")]
-        public async Task<IActionResult> RegisterUser(RegisterUserViewModel registerModel)
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="registrationModel"></param>
+        /// <returns></returns>
+        [HttpPost("RegistrationUser")]
+        public async Task<IActionResult> RegistrationUserPost(RegistrationUserViewModel registrationModel)
         {
-            //var allUsers = (List<User>)await _userService.GetAllUsersAsync();
-            //var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
-            //var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
-
+            var allUsers = (List<User>)await _userService.GetAllUsersAsync();
+            var userWhithSameEmail = allUsers.FirstOrDefault(user => user.Email == registrationModel.Email);
+            if (userWhithSameEmail != null)
+            {
+                return BadRequest($"Пользователь с таким Email ({registrationModel.Email}) уже зарегистрирован!");
+            }
             var userRole = await _roleService.GetRoleByIdAsync(1);
             if (ModelState.IsValid)
             {
                 var newUser = new User()
                 {
-                    Name = registerModel.Name,
-                    Age = registerModel.Age,
-                    Email = registerModel.Email,
-                    Password = registerModel.Password,
+                    Name = registrationModel.Name,
+                    Age = registrationModel.Age,
+                    Email = registrationModel.Email,
+                    Password = registrationModel.Password,
                 };
                 await _userService.CreateUserAsync(newUser);
                 var newRoleUser = new RoleUser()
@@ -107,7 +115,43 @@ namespace TestApplicationForVebtech.Controllers
             else
             {
                 return BadRequest("Модель не валидна");
+            }            
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <param name="roleId"></param>
+        /// <returns></returns>
+        [HttpPost("AddRoleForUser")]
+        public async Task<IActionResult> AddRoleForUserPost(int userId, int roleId)
+        {
+            var user = await _userService.GetUserByIdAsync(userId); 
+            var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+            var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+
+            if (user == null)
+            {
+                return NotFound($"Пользователь с ID={userId} не найден.\nError: response status is 404");
+            }
+            else if (user.Roles.FirstOrDefault(r => r.Id.Equals(roleId)) == null) 
+            {
+                var role = await _roleService.GetRoleByIdAsync(roleId);
+                if (role == null) 
+                {
+                    return NotFound($"Роль с ID={roleId} не найдена.\nError: response status is 404");
+                }
+                user.Roles.Add(role);
+                await _userService.UpdateUserAsync(user);
+                return Ok($"Пользователю \"{user.Name}\" добавлена роль \"{role.Name}\".");
+            }
+            else
+            {
+                return Ok($"У пользователя \"{user.Name}\" уже имеется роль с Id={roleId}.");
             }
         }
+
+
     }
 }

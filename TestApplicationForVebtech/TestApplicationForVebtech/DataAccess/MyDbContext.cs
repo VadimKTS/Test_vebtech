@@ -22,6 +22,10 @@ namespace TestApplicationForVebtech.DataAccess
                 .WithMany(e => e.Users)
                 .UsingEntity<RoleUser>();
 
+            modelBuilder.Entity<User>()
+                .HasIndex(u => u.Email)
+                .IsUnique();
+
             string[] RoleNames = new[] { "User", "Admin", "Support", "SuperAdmin" };
 
             for (int i = 1; i < RoleNames.Length+1; i++)

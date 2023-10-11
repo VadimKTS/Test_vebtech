@@ -4,7 +4,7 @@ using TestApplicationForVebtech.DataAccess.Entity;
 
 namespace TestApplicationForVebtech.Models.UserModels
 {
-    public class RegisterUserViewModel
+    public class RegistrationUserViewModel
     {
         [Required]
         [MaxLength(100)]
