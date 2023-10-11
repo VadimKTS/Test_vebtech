@@ -35,7 +35,7 @@ namespace TestApplicationForVebtech.Services.Service
 
         public async Task DeleteUserAsync(User user)
         {
-            await UnitOfWork.Users.UpdateAsync(user);
+            await UnitOfWork.Users.DeleteAsync(user);
         }
     }
 }

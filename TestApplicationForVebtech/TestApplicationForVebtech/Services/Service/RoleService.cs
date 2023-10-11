@@ -33,7 +33,7 @@ namespace TestApplicationForVebtech.Services.Service
 
         public async Task DeleteRoleAsync(Role role)
         {
-            await UnitOfWork.Roles.UpdateAsync(role);
+            await UnitOfWork.Roles.DeleteAsync(role);
         }
     }
 }

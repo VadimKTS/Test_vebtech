@@ -54,8 +54,8 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <param name="id"></param>
         /// <returns></returns>
-        [HttpPost("GetUserById")]
-        public async Task<IActionResult> GetUserByIdPost(int id)
+        [HttpGet("GetUserById")]
+        public async Task<IActionResult> GetUserById(int id)
         {
             var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -124,8 +124,8 @@ namespace TestApplicationForVebtech.Controllers
         /// <param name="userId"></param>
         /// <param name="roleId"></param>
         /// <returns></returns>
-        [HttpPost("AddRoleForUser")]
-        public async Task<IActionResult> AddRoleForUserPost(int userId, int roleId)
+        [HttpPut("AddRoleForUser")]
+        public async Task<IActionResult> AddRoleForUserPut(int userId, int roleId)
         {
             var user = await _userService.GetUserByIdAsync(userId); 
             var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
@@ -152,6 +152,49 @@ namespace TestApplicationForVebtech.Controllers
             }
         }
 
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="userId"></param>
+        /// <returns></returns>
+        [HttpDelete("DeleteUserById")]
+        public async Task<IActionResult> DeleteUserByIdDelete(int userId)
+        {
+            var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+            var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
 
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null) 
+            {
+                return NotFound($"Пользователь с ID={userId} не найден.\nError: response status is 404");
+            }
+            await _userService.DeleteUserAsync(user);            
+            return Ok($"Пользователь с ID={userId} удален.");
+        }
+
+        [HttpPut("EditUserById")]
+        public async Task<IActionResult> EditUserByIdPut(int userId, EditUserViewModel model)
+        {
+            var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
+            var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
+
+            var user = await _userService.GetUserByIdAsync(userId);
+            if (user == null)
+            {
+                return NotFound($"Пользователь с ID={userId} не найден.\nError: response status is 404");
+            }
+
+            if (ModelState.IsValid)
+            {
+                user.Name = model.Name;
+                user.Email = model.Email;
+                user.Age = model.Age;
+                user.Password = model.Password;
+
+                await _userService.UpdateUserAsync(user);
+                return Ok(user);
+            }
+            return BadRequest("Модель не валидна");
+        }
     }
 }
