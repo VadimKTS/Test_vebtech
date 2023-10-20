@@ -1,8 +1,6 @@
 ﻿using Microsoft.AspNetCore.Mvc;
-using Microsoft.Data.SqlClient;
 using Microsoft.IdentityModel.Tokens;
 using System.Data;
-using System.Linq;
 using TestApplicationForVebtech.DataAccess.Entity;
 using TestApplicationForVebtech.Models.SortModels;
 using TestApplicationForVebtech.Models.UserModels;
@@ -29,7 +27,7 @@ namespace TestApplicationForVebtech.Controllers
         /// </summary>
         /// <returns></returns>
         [HttpGet("GetAllUsers")]
-        public async Task<IActionResult> GetAllUsers(int? ageFilter, string nameFilter = "any", string emailFilter = "any", UserSortState userSortOrder = UserSortState.NameAsc, RoleSortState roleSortOrder = RoleSortState.NameAsc,  int page = 1, int pageSize = 3 )
+        public async Task<IActionResult> GetAllUsers(int? ageFilter, string nameFilter = "any", string emailFilter = "any", UserSortState userSortOrder = UserSortState.NameAsc, RoleSortState roleSortOrder = RoleSortState.NameAsc, int page = 1, int pageSize = 3)
         {
             var allUsers = (List<User>)await _userService.GetAllUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
@@ -166,7 +164,7 @@ namespace TestApplicationForVebtech.Controllers
             else
             {
                 return BadRequest("Модель не валидна");
-            }            
+            }
         }
 
         /// <summary>
@@ -178,7 +176,7 @@ namespace TestApplicationForVebtech.Controllers
         [HttpPut("AddRoleForUser")]
         public async Task<IActionResult> AddRoleForUserPut(int userId, int roleId)
         {
-            var user = await _userService.GetUserByIdAsync(userId); 
+            var user = await _userService.GetUserByIdAsync(userId);
             var roleUsers = (List<RoleUser>)await _roleUserService.GetAllRoleUsersAsync();
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
 
@@ -186,10 +184,10 @@ namespace TestApplicationForVebtech.Controllers
             {
                 return NotFound($"Пользователь с ID={userId} не найден.\nError: response status is 404");
             }
-            else if (user.Roles.FirstOrDefault(r => r.Id.Equals(roleId)) == null) 
+            else if (user.Roles.FirstOrDefault(r => r.Id.Equals(roleId)) == null)
             {
                 var role = await _roleService.GetRoleByIdAsync(roleId);
-                if (role == null) 
+                if (role == null)
                 {
                     return NotFound($"Роль с ID={roleId} не найдена.\nError: response status is 404");
                 }
@@ -215,11 +213,11 @@ namespace TestApplicationForVebtech.Controllers
             var allRoles = (List<Role>)await _roleService.GetAllRolesAsync();
 
             var user = await _userService.GetUserByIdAsync(userId);
-            if (user == null) 
+            if (user == null)
             {
                 return NotFound($"Пользователь с ID={userId} не найден.\nError: response status is 404");
             }
-            await _userService.DeleteUserAsync(user);            
+            await _userService.DeleteUserAsync(user);
             return Ok($"Пользователь с ID={userId} удален.");
         }
 
